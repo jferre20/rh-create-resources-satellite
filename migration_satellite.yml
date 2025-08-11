@@ -1,0 +1,72 @@
+---
+- hosts: localhost 
+  gather_facts: false
+  vars_files:
+    - group_vars/satellite_vars.yml 
+
+  tasks:
+    - name: Creating a new organization
+      redhat.satellite.organization:
+        username: "{{ satellite['username'] }}"
+        password: "{{ satellite['password'] }}"
+        server_url: "{{ satellite['url'] }}"
+        name: "Infra"
+        state: present
+        validate_certs: false 
+
+    - name: Create location
+      redhat.satellite.location:
+        username: "{{ satellite['username'] }}"
+        password: "{{ satellite['password'] }}"
+        server_url: "{{ satellite['url'] }}"
+        name: "HML"
+        organizations:
+          - "Infra" 
+        state: present
+        validate_certs: false
+
+    - name: Create and publish a content view
+      block:
+        - name: Create new content view
+          redhat.satellite.content_view:
+            username: "{{ satellite['username'] }}"
+            password: "{{ satellite['password'] }}"
+            server_url: "{{ satellite['url'] }}"
+            name: "content-view-rhel9"
+            organization: "Infra"
+            validate_certs: false
+
+        - name: Publish content view 
+          redhat.satellite.content_view_version:
+            username: "{{ satellite['username'] }}"
+            password: "{{ satellite['password'] }}"
+            server_url: "{{ satellite['url'] }}"
+            content_view: "content-view-rhel9"
+            organization: "Infra"
+            version: 1.0 
+            lifecycle_environments: 
+              - "Library"
+            validate_certs: false
+
+    - name: Create host collection
+      redhat.satellite.host_collection:
+        username: "{{ satellite['username'] }}"
+        password: "{{ satellite['password'] }}"
+        server_url: "{{ satellite['url'] }}"
+        name: "rhel9-servers"
+        organization: "Infra"
+        state: present
+        validate_certs: false
+
+    - name: Create activation keys
+      redhat.satellite.activation_key:
+        username: "{{ satellite['username'] }}"
+        password: "{{ satellite['password'] }}"
+        server_url: "{{ satellite['url'] }}"
+        name: "activation-key-rhel9"
+        organization: "Infra"
+        host_collections:
+          - "rhel9-servers"
+        lifecycle_environment: "Library"
+        content_view: "content-view-rhel9" 
+        validate_certs: false

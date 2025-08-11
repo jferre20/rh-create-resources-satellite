@@ -1,0 +1,5 @@
+---
+satellite:
+  url: https://satellite-example.jferre.local
+  username: jferre
+  password: redhat@123
