@@ -70,4 +70,4 @@
         lifecycle_environment: "Library"
         content_view: "{{ content_view }}" 
         validate_certs: false
-      loop: "{{ activation_keys }}"
+      loop: "{{ activation_keys.split('\n') }}"
