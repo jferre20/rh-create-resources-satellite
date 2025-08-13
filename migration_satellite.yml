@@ -10,7 +10,7 @@
         username: "{{ satellite['username'] }}"
         password: "{{ satellite['password'] }}"
         server_url: "{{ satellite['url'] }}"
-        name: "Infra"
+        name: "{{ organization }}"
         state: present
         validate_certs: false 
 
@@ -19,9 +19,9 @@
         username: "{{ satellite['username'] }}"
         password: "{{ satellite['password'] }}"
         server_url: "{{ satellite['url'] }}"
-        name: "HML"
+        name: "{{ location }}"
         organizations:
-          - "Infra" 
+          - "{{ organization }}" 
         state: present
         validate_certs: false
 
@@ -32,7 +32,7 @@
             username: "{{ satellite['username'] }}"
             password: "{{ satellite['password'] }}"
             server_url: "{{ satellite['url'] }}"
-            name: "content-view-rhel9"
+            name: "{{ content_view }}"
             organization: "Infra"
             validate_certs: false
 
@@ -41,8 +41,8 @@
             username: "{{ satellite['username'] }}"
             password: "{{ satellite['password'] }}"
             server_url: "{{ satellite['url'] }}"
-            content_view: "content-view-rhel9"
-            organization: "Infra"
+            content_view: "{{ content_view }}"
+            organization: "{{ organization }}"
             version: 1.0 
             lifecycle_environments: 
               - "Library"
@@ -53,8 +53,8 @@
         username: "{{ satellite['username'] }}"
         password: "{{ satellite['password'] }}"
         server_url: "{{ satellite['url'] }}"
-        name: "rhel9-servers"
-        organization: "Infra"
+        name: "{{ host_collection }}"
+        organization: "{{ organization }}"
         state: present
         validate_certs: false
 
@@ -63,10 +63,11 @@
         username: "{{ satellite['username'] }}"
         password: "{{ satellite['password'] }}"
         server_url: "{{ satellite['url'] }}"
-        name: "activation-key-rhel9"
-        organization: "Infra"
+        name: "{{ item }}"
+        organization: "{{ organization }}"
         host_collections:
-          - "rhel9-servers"
+          - "{{ host_collection }}"
         lifecycle_environment: "Library"
-        content_view: "content-view-rhel9" 
+        content_view: "{{ content_view }}" 
         validate_certs: false
+      loop: "{{ activation_keys }}"
