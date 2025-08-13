@@ -33,7 +33,7 @@
             password: "{{ satellite['password'] }}"
             server_url: "{{ satellite['url'] }}"
             name: "{{ content_view }}"
-            organization: "Infra"
+            organization: "{{ organization }}"
             validate_certs: false
 
         - name: Publish content view 
